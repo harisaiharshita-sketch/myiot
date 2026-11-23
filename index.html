@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>Desktop Bot</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:
+radial-gradient(circle at top,#263b5e,#080c16 65%);
+color:white;
+min-height:100vh;
+padding:15px;
+}
+
+.wrap{
+max-width:760px;
+margin:auto;
+}
+
+.header{
+text-align:center;
+padding:22px;
+border-radius:25px;
+background:rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.12);
+box-shadow:0 15px 40px rgba(0,0,0,.35);
+}
+
+.robot{
+font-size:55px;
+}
+
+.title{
+font-size:28px;
+font-weight:bold;
+}
+
+.sub{
+opacity:.6;
+font-size:12px;
+letter-spacing:2px;
+}
+
+.panel{
+margin-top:14px;
+padding:17px;
+border-radius:22px;
+background:rgba(255,255,255,.07);
+border:1px solid rgba(255,255,255,.1);
+}
+
+.heading{
+font-size:11px;
+letter-spacing:2px;
+opacity:.55;
+margin-bottom:12px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:9px;
+}
+
+button{
+border:0;
+border-radius:16px;
+padding:15px 7px;
+background:rgba(255,255,255,.11);
+color:white;
+font-weight:bold;
+font-size:13px;
+cursor:pointer;
+}
+
+button:active{
+transform:scale(.94);
+}
+
+.blue{
+background:rgba(45,125,255,.65);
+}
+
+.red{
+background:rgba(210,45,60,.75);
+}
+
+.green{
+background:rgba(35,170,110,.55);
+}
+
+.data{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.card{
+background:rgba(0,0,0,.2);
+padding:15px;
+border-radius:17px;
+text-align:center;
+}
+
+.label{
+font-size:10px;
+opacity:.5;
+}
+
+.value{
+font-size:25px;
+font-weight:bold;
+margin-top:5px;
+}
+
+.footer{
+text-align:center;
+font-size:10px;
+opacity:.4;
+padding:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="wrap">
+
+<div class="header">
+
+
+
+<div class="title">
+DESKTOP BOT
+</div>
+
+<div class="sub">
+SMART ROBOT CONTROL CENTER
+</div>
+
+</div>
+
+<div class="panel">
+
+<div class="heading">
+DISPLAY MODE
+</div>
+
+<div class="grid">
+
+<button onclick="send('face')">
+FACE
+</button>
+
+<button onclick="send('distance')">
+DISTANCE
+</button>
+
+<button onclick="send('temperature')">
+TEMPERATURE
+</button>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<div class="heading">
+MOVEMENT
+</div>
+
+<div style="text-align:center">
+
+<button
+class="blue"
+onclick="send('forward')">
+FORWARD
+</button>
+
+</div>
+
+<br>
+
+<div class="grid">
+
+<button onclick="send('left')">
+LEFT
+</button>
+
+<button
+class="red"
+onclick="send('stop')">
+STOP
+</button>
+
+<button onclick="send('right')">
+RIGHT
+</button>
+
+</div>
+
+<br>
+
+<div style="text-align:center">
+
+<button onclick="send('backward')">
+BACKWARD
+</button>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<div class="heading">
+CONTROL MODE
+</div>
+
+<div class="grid">
+
+<button
+class="green"
+onclick="send('manual')">
+MANUAL
+</button>
+
+<button
+class="blue"
+onclick="send('auto')">
+AUTO
+</button>
+
+<button
+class="red"
+onclick="send('stop')">
+SAFE STOP
+</button>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<div class="heading">
+BOTH ARMS
+</div>
+
+<div class="grid">
+
+<button onclick="send('armsup')">
+UP
+</button>
+
+<button onclick="send('armsrest')">
+REST
+</button>
+
+<button onclick="send('armsdown')">
+DOWN
+</button>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<div class="heading">
+LIVE DATA
+</div>
+
+<div class="data">
+
+<div class="card">
+
+<div class="label">
+DISTANCE
+</div>
+
+<div
+class="value"
+id="distance">
+--
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="label">
+TEMPERATURE
+</div>
+
+<div
+class="value"
+id="temp">
+30 C
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">
+DESKTOP BOT - ESP32 - SMART INTERACTION
+</div>
+
+</div>
+
+<script>
+
+function send(command){
+
+fetch(
+'/command?cmd='+
+encodeURIComponent(command)
+)
+.then(
+response => response.text()
+)
+.then(
+data => console.log(
+'Command:',
+command,
+data
+)
+)
+.catch(
+error => console.error(error)
+);
+
+}
+
+function update(){
+
+fetch('/data')
+
+.then(
+r => r.json()
+)
+
+.then(
+d => {
+
+document.getElementById(
+'distance'
+).innerText =
+d.distance >= 999
+? '--'
+: d.distance.toFixed(0)+' cm';
+
+document.getElementById(
+'temp'
+).innerText =
+d.tempValid
+? d.temperature.toFixed(1)+' C'
+: '--';
+
+}
+)
+
+.catch(
+error => console.error(error)
+);
+
+}
+
+setInterval(
+update,
+1000
+);
+
+update();
+
+</script>
+
+</body>
+
+</html>
