@@ -171,10 +171,6 @@ FACE
 DISTANCE
 </button>
 
-<button onclick="send('temperature')">
-TEMPERATURE
-</button>
-
 </div>
 
 </div>
@@ -230,60 +226,6 @@ BACKWARD
 <div class="panel">
 
 <div class="heading">
-CONTROL MODE
-</div>
-
-<div class="grid">
-
-<button
-class="green"
-onclick="send('manual')">
-MANUAL
-</button>
-
-<button
-class="blue"
-onclick="send('auto')">
-AUTO
-</button>
-
-<button
-class="red"
-onclick="send('stop')">
-SAFE STOP
-</button>
-
-</div>
-
-</div>
-
-<div class="panel">
-
-<div class="heading">
-BOTH ARMS
-</div>
-
-<div class="grid">
-
-<button onclick="send('armsup')">
-UP
-</button>
-
-<button onclick="send('armsrest')">
-REST
-</button>
-
-<button onclick="send('armsdown')">
-DOWN
-</button>
-
-</div>
-
-</div>
-
-<div class="panel">
-
-<div class="heading">
 LIVE DATA
 </div>
 
@@ -299,6 +241,10 @@ DISTANCE
 class="value"
 id="distance">
 --
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -368,13 +314,6 @@ document.getElementById(
 d.distance >= 999
 ? '--'
 : d.distance.toFixed(0)+' cm';
-
-document.getElementById(
-'temp'
-).innerText =
-d.tempValid
-? d.temperature.toFixed(1)+' C'
-: '--';
 
 }
 )
